@@ -1,50 +1,78 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
+// Initial items for packing list
 const initialItems = [
   { id: 1, description: "Passports", quantity: 2, packed: false },
   { id: 2, description: "Socks", quantity: 12, packed: false },
   { id: 3, description: "Shoes", quantity: 1, packed: true },
 ];
+
+// Main App component
 export default function App() {
+  const [items, setItems] = useState([]);             // State for packing items
+   // Function to add a new item to the packing list
+   function handleAddItems(item) {
+    setItems((items) => [...items, item]);
+  }
   return (
     <div className="app">
       <Logo />
-      <Form />
-      <PackingList />
+      <Form onAddItems = {handleAddItems} />
+      <PackingList items={items}  />
       <Stats />
     </div>
   );
 }
 
+// Logo component
 function Logo() {
   return <h1>Far Away 🧳</h1>;
 }
 
-function Form() {
-  const [description, setDescription] = useState("");
-  const [numOfItem, setNumOfItems] = useState(1);
-  // const [items, setItems] = useState[]
+// Form component for adding items to the packing list
+function Form({onAddItems}) {
+  const [description, setDescription] = useState(""); // State for item description
+  const [numOfItem, setNumOfItems] = useState(1);    // State for number of items
+
+
+  // // Effect to log updated items whenever items change
+  // useEffect(() => {
+  //   console.log("Updated items:", items);
+  // }, [items]); // Runs every time items changes
+
+ 
+
+  // Handle form submission to add a new item
   function handleSubmit(e) {
     e.preventDefault();
-    if(!description){
-      return
+
+    if (!description) {
+      return; // Prevent adding empty items
     }
+
+    // Create new item object
     const newItem = {
       description,
-      numOfItem,
+      quantity: numOfItem, // Changed key to quantity
       packed: false,
-      id: Date.now(),
+      id: Date.now(), // Unique id for the item
     };
-    console.log(newItem);
-    setDescription("")
-    setNumOfItems(1)
+
+    onAddItems(newItem); // Add the new item to the list
+
+    // Reset input fields
+    setDescription("");
+    setNumOfItems(1);
   }
+
+  // Handle changes to the item description input
   function handleChange(e) {
     setDescription(e.target.value);
   }
+
+  // Handle changes to the number of items select
   function handleNumberOfItems(e) {
-    setNumOfItems(+e.target.value);
- 
+    setNumOfItems(+e.target.value); // Convert to number
   }
 
   return (
@@ -59,28 +87,33 @@ function Form() {
           );
         })}
       </select>
+
       <input
         type="text"
         value={description}
         onChange={handleChange}
         placeholder="Item.."
       />
+
       <button onClick={handleSubmit}>Add</button>
     </form>
   );
 }
 
-function PackingList() {
+// Packing list component to display added items
+function PackingList({items}) {
   return (
     <div className="list">
       <ul>
-        {initialItems.map((item) => {
+        {items.map((item) => {
           return <Item item={item} key={item.id} />;
         })}
       </ul>
     </div>
   );
 }
+
+// Individual item component for the packing list
 function Item({ item: { description, packed, id, quantity } }) {
   return (
     <li>
@@ -90,6 +123,8 @@ function Item({ item: { description, packed, id, quantity } }) {
     </li>
   );
 }
+
+// Stats component to show packing statistics
 function Stats() {
   return (
     <footer className="stats">
