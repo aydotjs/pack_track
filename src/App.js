@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const initialItems = [
   { id: 1, description: "Passports", quantity: 2, packed: false },
@@ -24,9 +24,7 @@ function Form() {
   const [description, setDescription] = useState("");
   const [numOfItem, setNumOfItems] = useState(1);
   const [items, setItems] = useState([]);
-  useEffect(() => {
-    console.log(items);
-  }, [items]);
+  
   function handleAddItems(item) {
     setItems((items) => [...items, item]);
     console.log(items);
