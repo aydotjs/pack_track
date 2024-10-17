@@ -9,17 +9,15 @@ const initialItems = [
 
 // Main App component
 export default function App() {
-  const [items, setItems] = useState([]);             // State for packing items
-   // Function to add a new item to the packing list
-   function handleAddItems(item) {
+  const [items, setItems] = useState([]);
+  function handleAddItems(item) {
     setItems((items) => [...items, item]);
-    // 
   }
   return (
     <div className="app">
       <Logo />
       <Form onAddItems = {handleAddItems} />
-      <PackingList items={items}  />
+      <PackingList items = {items} />
       <Stats />
     </div>
   );
@@ -32,16 +30,13 @@ function Logo() {
 
 // Form component for adding items to the packing list
 function Form({onAddItems}) {
+  
   const [description, setDescription] = useState(""); // State for item description
-  const [numOfItem, setNumOfItems] = useState(1);    // State for number of items
-
-
-  // // Effect to log updated items whenever items change
+  const [numOfItem, setNumOfItems] = useState(1); // State for number of items
   // useEffect(() => {
-  //   console.log("Updated items:", items);
-  // }, [items]); // Runs every time items changes
-
- 
+  //   console.log(items);
+  // }, [items]);
+  // Function to add a new item to the packing list
 
   // Handle form submission to add a new item
   function handleSubmit(e) {
@@ -59,7 +54,7 @@ function Form({onAddItems}) {
       id: Date.now(), // Unique id for the item
     };
 
-    onAddItems(newItem); // Add the new item to the list
+   onAddItems(newItem); // Add the new item to the list
 
     // Reset input fields
     setDescription("");
@@ -102,7 +97,7 @@ function Form({onAddItems}) {
 }
 
 // Packing list component to display added items
-function PackingList({items}) {
+function PackingList({ items }) {
   return (
     <div className="list">
       <ul>
