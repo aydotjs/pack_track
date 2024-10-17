@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const initialItems = [
   { id: 1, description: "Passports", quantity: 2, packed: false },
@@ -23,11 +23,19 @@ function Logo() {
 function Form() {
   const [description, setDescription] = useState("");
   const [numOfItem, setNumOfItems] = useState(1);
-  // const [items, setItems] = useState[]
+  const [items, setItems] = useState([]);
+  useEffect(() => {
+    console.log(items);
+  }, [items]);
+  function handleAddItems(item) {
+    setItems((items) => [...items, item]);
+    console.log(items);
+  }
+  // handling the submission of the form
   function handleSubmit(e) {
     e.preventDefault();
-    if(!description){
-      return
+    if (!description) {
+      return;
     }
     const newItem = {
       description,
@@ -35,16 +43,17 @@ function Form() {
       packed: false,
       id: Date.now(),
     };
-    console.log(newItem);
-    setDescription("")
-    setNumOfItems(1)
+    handleAddItems(newItem);
+
+    setDescription("");
+    setNumOfItems(1);
   }
+  // handling the change in input
   function handleChange(e) {
     setDescription(e.target.value);
   }
   function handleNumberOfItems(e) {
     setNumOfItems(+e.target.value);
- 
   }
 
   return (
