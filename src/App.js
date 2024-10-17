@@ -13,11 +13,14 @@ export default function App() {
   function handleAddItems(item) {
     setItems((items) => [...items, item]);
   }
+  function handleDeleteItems(id) {
+    setItems((items) => items.filter((item) => item.id !== id));
+  }
   return (
     <div className="app">
       <Logo />
-      <Form onAddItems = {handleAddItems} />
-      <PackingList items = {items} />
+      <Form onAddItems={handleAddItems} />
+      <PackingList items={items} onDeleteItems={handleDeleteItems} />
       <Stats />
     </div>
   );
@@ -29,8 +32,7 @@ function Logo() {
 }
 
 // Form component for adding items to the packing list
-function Form({onAddItems}) {
-  
+function Form({ onAddItems }) {
   const [description, setDescription] = useState(""); // State for item description
   const [numOfItem, setNumOfItems] = useState(1); // State for number of items
   // useEffect(() => {
@@ -54,7 +56,7 @@ function Form({onAddItems}) {
       id: Date.now(), // Unique id for the item
     };
 
-   onAddItems(newItem); // Add the new item to the list
+    onAddItems(newItem); // Add the new item to the list
 
     // Reset input fields
     setDescription("");
@@ -97,12 +99,19 @@ function Form({onAddItems}) {
 }
 
 // Packing list component to display added items
-function PackingList({ items }) {
+function PackingList({ items, onDeleteItems }) {
   return (
     <div className="list">
       <ul>
         {items.map((item) => {
-          return <Item item={item} key={item.id} />;
+          return (
+            <Item
+              item={item}
+              key={item.id}
+              items={items}
+              onDeleteItems={onDeleteItems}
+            />
+          );
         })}
       </ul>
     </div>
@@ -110,12 +119,16 @@ function PackingList({ items }) {
 }
 
 // Individual item component for the packing list
-function Item({ item: { description, packed, id, quantity } }) {
+function Item({ item, onDeleteItems }) {
+  function handleDeleteItems() {
+    onDeleteItems(item.id);
+  }
   return (
     <li>
-      <span className={packed ? `line-through` : ""}>
-        {quantity} {description}
+      <span className={item.packed ? `line-through` : ""}>
+        {item.quantity} {item.description}
       </span>
+      <button onClick={handleDeleteItems}>❌</button>
     </li>
   );
 }
