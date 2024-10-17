@@ -13,6 +13,7 @@ export default function App() {
    // Function to add a new item to the packing list
    function handleAddItems(item) {
     setItems((items) => [...items, item]);
+    // 
   }
   return (
     <div className="app">
