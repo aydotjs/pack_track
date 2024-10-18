@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const initialItems = [
   { id: 1, description: "Passports", quantity: 2, packed: false },
@@ -6,12 +6,24 @@ const initialItems = [
   { id: 3, description: "Shoes", quantity: 1, packed: true },
 ];
 export default function App() {
+  const [items, setItems] = useState([]);
+  function handleAddItems(item) {
+    setItems((items) => items.slice().concat(item));
+  }
+  function deleteItems(id) {
+    setItems((items) => items.filter((item) => item.id !== id));
+  }
+
+  function alertNumOfItems(){
+    alert(`There are ${items.length} items in the packing list`)
+  }
+
   return (
     <div className="app">
       <Logo />
-      <Form />
-      <PackingList />
-      <Stats />
+      <Form onAddItems={handleAddItems} />
+      <PackingList items={items} onDeleteItems={deleteItems} />
+      <Stats onAlertNumOfItems = {alertNumOfItems} />
     </div>
   );
 }
@@ -21,15 +33,9 @@ function Logo() {
   return <h1>Far Away 🧳</h1>;
 }
 
-function Form() {
+function Form({ onAddItems, number }) {
   const [description, setDescription] = useState("");
   const [numOfItem, setNumOfItems] = useState(1);
-  const [items, setItems] = useState([]);
-  
-  function handleAddItems(item) {
-    setItems((items) => [...items, item]);
-    console.log(items);
-  }
   // handling the submission of the form
   function handleSubmit(e) {
     e.preventDefault();
@@ -42,7 +48,7 @@ function Form() {
       packed: false,
       id: Date.now(),
     };
-    handleAddItems(newItem);
+    onAddItems(newItem);
 
     setDescription("");
     setNumOfItems(1);
@@ -78,30 +84,40 @@ function Form() {
   );
 }
 
-function PackingList() {
+function PackingList({ items, onDeleteItems }) {
   return (
     <div className="list">
       <ul>
-        {initialItems.map((item) => {
-          return <Item item={item} key={item.id} />;
+        {items.map((item) => {
+          return (
+            <Item item={item} key={item.id} onDeleteItems={onDeleteItems} />
+          );
         })}
       </ul>
     </div>
   );
 }
-function Item({ item: { description, packed, id, quantity } }) {
+function Item({ item: { description, packed, id, numOfItem }, onDeleteItems }) {
+  function handleDelete() {
+    onDeleteItems(id);
+  }
   return (
     <li>
       <span className={packed ? `line-through` : ""}>
-        {quantity} {description}
+        {numOfItem} {description}
       </span>
+      <button onClick={handleDelete}>❌</button>
     </li>
   );
 }
-function Stats() {
+function Stats({onAlertNumOfItems}) {
+  function handleAlert(){
+    onAlertNumOfItems()
+  }
   return (
     <footer className="stats">
       <em>You have X items on your list, and you already packed X (X%)</em>
+      <button onClick={handleAlert}>Click me to get all the number of items in your packing list</button>
     </footer>
   );
 }
