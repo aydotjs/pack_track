@@ -55,4 +55,4 @@ function Stats() {
   );
 }
 // NOTES
-// - Derived state refers to a situation where the state of a component is calculated or derived from other existing state or props.
+//- Derived state refers to a situation where the state of a component is calculated or derived from other existing state or props.
